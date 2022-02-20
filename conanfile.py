@@ -48,7 +48,18 @@ class CCTagConan(ConanFile):
         self.requires("tbb/2020.3")
         self.requires("opencv/4.5.3")
 
+    @property
+    def _required_boost_components(self):
+        return [
+            "atomic", "chrono", "date_time", "filesystem",
+            "math", "serialization", "system", "thread", "timer",
+        ]
+
     def validate(self):
+        miss_boost_required_comp = any(getattr(self.options["boost"], "without_{}".format(boost_comp), True) for boost_comp in self._required_boost_components)
+        if self.options["boost"].header_only or miss_boost_required_comp:
+            raise ConanInvalidConfiguration("{0} requires non header-only boost with these components: {1}".format(self.name, ", ".join(self._required_boost_components)))
+
         # FIXME: add cuda support
         if self.options.with_cuda:
             raise ConanInvalidConfiguration("CUDA not supported yet")
@@ -56,6 +67,11 @@ class CCTagConan(ConanFile):
     def source(self):
         tools.get(**self.conan_data["sources"][self.version],
                   destination=self._source_subfolder, strip_root=True)
+
+    def _patch_sources(self):
+        tools.replace_in_file(os.path.join(self._source_subfolder, "src", "CMakeLists.txt"),
+                              "${OpenCV_LIBS}"
+                              "opencv_core opencv_videoio opencv_imgproc opencv_imgcodecs")
 
     @functools.lru_cache(1)
     def _configure_cmake(self):
@@ -93,6 +109,12 @@ class CCTagConan(ConanFile):
         self.cpp_info.libs = ["CCTag{}".format(suffix)]
         if self.settings.os in ["Linux", "FreeBSD"]:
             self.cpp_info.system_libs.extend(["dl", "pthread"])
+        self.cpp_info.requires = [
+            "boost::atomic", "boost::chrono", "boost::date_time", "boost::filesystem",
+            "boost::serialization", "boost::system", "boost::thread", "boost::timer",
+            "boost::math_c99", "eigen::eigen", "tbb::tbb", "opencv::opencv_core",
+            "opencv::opencv_videoio", "opencv::opencv_imgproc", "opencv::opencv_imgcodecs",
+        ]
 
         # TODO: to remove in conan v2 once cmake_find_package* generators removed
         self.cpp_info.names["cmake_find_package"] = "CCTag"
