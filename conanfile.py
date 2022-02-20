@@ -60,6 +60,9 @@ class CCTagConan(ConanFile):
         if self.options["boost"].header_only or miss_boost_required_comp:
             raise ConanInvalidConfiguration("{0} requires non header-only boost with these components: {1}".format(self.name, ", ".join(self._required_boost_components)))
 
+        if self.settings.compiler.get_safe("cppstd"):
+            tools.check_min_cppstd(self, 14)
+
         # FIXME: add cuda support
         if self.options.with_cuda:
             raise ConanInvalidConfiguration("CUDA not supported yet")
