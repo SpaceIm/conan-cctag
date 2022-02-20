@@ -40,4 +40,5 @@ if __name__ == "__main__":
                                  build_policy="missing", skip_check_credentials=True)
     builder.add_common_builds(shared_option_name=shared_option_name, pure_c=False, dll_with_static_runtime=True,
                               reference=reference, build_all_options_values=None)
+    builder.update_build_if(lambda build: True, new_build_requires={"*": ["cmake/3.22.0"]})
     builder.run()
