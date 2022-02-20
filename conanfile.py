@@ -89,7 +89,7 @@ class CCTagConan(ConanFile):
     def package_info(self):
         self.cpp_info.set_property("cmake_file_name", "CCTag")
         self.cpp_info.set_property("cmake_target_name", "CCTag::CCTag")
-        suffix = "d" if self.settings.buid_type == "Debug" else ""
+        suffix = "d" if self.settings.build_type == "Debug" else ""
         self.cpp_info.libs = ["CCTag{}".format(suffix)]
         if self.settings.os in ["Linux", "FreeBSD"]:
             self.cpp_info.system_libs.extend(["dl", "pthread"])
