@@ -80,7 +80,7 @@ class CCTagConan(ConanFile):
 
     def _patch_sources(self):
         tools.replace_in_file(os.path.join(self._source_subfolder, "src", "CMakeLists.txt"),
-                              "${OpenCV_LIBS}"
+                              "${OpenCV_LIBS}",
                               "opencv_core opencv_videoio opencv_imgproc opencv_imgcodecs")
 
     @functools.lru_cache(1)
