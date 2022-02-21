@@ -79,6 +79,11 @@ class CCTagConan(ConanFile):
                   destination=self._source_subfolder, strip_root=True)
 
     def _patch_sources(self):
+        # Cleanup RPATH if Apple in shared lib of install tree
+        tools.replace_in_file(os.path.join(self._source_subfolder, "CMakeLists.txt"),
+                              "SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)",
+                              "")
+        # Link to OpenCV targets
         tools.replace_in_file(os.path.join(self._source_subfolder, "src", "CMakeLists.txt"),
                               "${OpenCV_LIBS}",
                               "opencv_core opencv_videoio opencv_imgproc opencv_imgcodecs")
