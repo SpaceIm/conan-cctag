@@ -51,8 +51,8 @@ class CCTagConan(ConanFile):
     @property
     def _required_boost_components(self):
         return [
-            "atomic", "chrono", "date_time", "filesystem",
-            "math", "serialization", "system", "thread", "timer",
+            "atomic", "chrono", "date_time", "exception", "filesystem",
+            "math", "serialization", "stacktrace", "system", "thread", "timer",
         ]
 
     def validate(self):
@@ -126,10 +126,11 @@ class CCTagConan(ConanFile):
         if self.settings.os in ["Linux", "FreeBSD"]:
             self.cpp_info.system_libs.extend(["dl", "pthread"])
         self.cpp_info.requires = [
-            "boost::atomic", "boost::chrono", "boost::date_time", "boost::filesystem",
-            "boost::serialization", "boost::system", "boost::thread", "boost::timer",
-            "boost::math_c99", "eigen::eigen", "tbb::tbb", "opencv::opencv_core",
-            "opencv::opencv_videoio", "opencv::opencv_imgproc", "opencv::opencv_imgcodecs",
+            "boost::atomic", "boost::chrono", "boost::date_time", "boost::exception",
+            "boost::filesystem", "boost::serialization", "boost::stacktrace",
+            "boost::system", "boost::thread", "boost::timer", "boost::math_c99",
+            "eigen::eigen", "tbb::tbb", "opencv::opencv_core", "opencv::opencv_videoio",
+            "opencv::opencv_imgproc", "opencv::opencv_imgcodecs",
         ]
 
         # TODO: to remove in conan v2 once cmake_find_package* generators removed
